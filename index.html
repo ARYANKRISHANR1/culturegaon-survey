@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CultureGaon — Guest Research Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8173A;
+    --dark: #111111;
+    --white: #FFFFFF;
+    --muted: #888888;
+    --border: #E5E5E5;
+    --bg: #F8F8F8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; }
+
+  .hero {
+    background: var(--dark); color: var(--white);
+    padding: 60px 24px 48px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px; background: var(--red); opacity: 0.12; border-radius: 50%;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -80px; left: -40px;
+    width: 200px; height: 200px; background: var(--red); opacity: 0.08; border-radius: 50%;
+  }
+  .pillars {
+    display: flex; justify-content: center; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .pillar {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+  }
+  .pillar span { color: var(--red); margin-right: 6px; }
+  .tag {
+    display: inline-block; background: var(--red); color: var(--white);
+    font-size: 11px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 40px); font-weight: 600;
+    line-height: 1.2; margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--red); font-style: italic; }
+  .hero p {
+    font-size: 15px; color: #aaaaaa; max-width: 480px;
+    margin: 0 auto 28px; line-height: 1.6; font-weight: 300;
+  }
+  .progress-bar {
+    background: rgba(255,255,255,0.1); height: 3px;
+    border-radius: 2px; max-width: 400px; margin: 0 auto; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--red); border-radius: 2px;
+    transition: width 0.4s ease; width: 0%;
+  }
+  .progress-text { font-size: 12px; color: #666; margin-top: 10px; letter-spacing: 1px; }
+
+  .form-wrapper { max-width: 680px; margin: 0 auto; padding: 0 16px 80px; }
+  .section { margin-top: 40px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-top: 8px; }
+  .section-num {
+    width: 32px; height: 32px; background: var(--red); color: var(--white);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; flex-shrink: 0;
+  }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; color: var(--dark); }
+
+  .q-card {
+    background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1.5px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .q-card:focus-within { border-color: var(--red); box-shadow: 0 4px 20px rgba(232,23,58,0.1); }
+  .q-card.highlight { background: #fff5f7; border: 1.5px solid #ffd0d8; }
+  .highlight-badge {
+    display: inline-block; background: var(--red); color: white;
+    font-size: 10px; font-weight: 500; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px;
+  }
+  .q-label { font-size: 15px; font-weight: 500; color: var(--dark); margin-bottom: 6px; line-height: 1.5; }
+  .q-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+  .q-note { font-size: 11px; color: var(--red); margin-bottom: 14px; font-style: italic; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .options.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; background: var(--bg); border-radius: 10px;
+    cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s;
+  }
+  .opt:hover { border-color: #ddd; }
+  .opt.selected { background: #fff5f7; border-color: var(--red); }
+  .opt-check {
+    width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 50%;
+    flex-shrink: 0; margin-top: 1px; transition: all 0.15s;
+    position: relative; background: var(--white);
+  }
+  .opt.selected .opt-check { border-color: var(--red); background: var(--red); }
+  .opt.selected .opt-check::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); width: 6px; height: 6px;
+    background: white; border-radius: 50%;
+  }
+  .opt-label { font-size: 14px; color: #444; line-height: 1.4; }
+  .opt-checkbox .opt-check { border-radius: 5px; }
+  .opt-checkbox.selected .opt-check::after {
+    content: '✓'; font-size: 11px; font-weight: 700; color: white;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); width: auto; height: auto; background: none; border-radius: 0;
+  }
+
+  .scale-wrap { padding: 8px 0; }
+  .scale-labels { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; color: var(--muted); }
+  .scale-btns { display: flex; gap: 8px; }
+  .scale-btn {
+    flex: 1; height: 40px; border: 1.5px solid var(--border); background: var(--white);
+    border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;
+    color: var(--muted); transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .scale-btn:hover { border-color: var(--red); color: var(--red); }
+  .scale-btn.active { background: var(--red); border-color: var(--red); color: var(--white); }
+
+  textarea {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--dark); resize: vertical; min-height: 90px;
+    transition: border-color 0.15s; background: var(--bg);
+  }
+  textarea:focus { outline: none; border-color: var(--red); background: var(--white); }
+  textarea::placeholder { color: #bbb; }
+  input[type="text"] {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--dark); transition: border-color 0.15s; background: var(--bg);
+  }
+  input[type="text"]:focus { outline: none; border-color: var(--red); background: var(--white); }
+
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  .submit-area { text-align: center; padding-top: 16px; }
+  .submit-btn {
+    background: var(--red); color: var(--white); border: none;
+    padding: 18px 48px; border-radius: 50px; font-size: 16px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(232,23,58,0.3);
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,23,58,0.4); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .submit-note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: var(--dark); color: white; padding: 14px 28px; border-radius: 50px;
+    font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s; z-index: 999; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+
+  .thankyou { display: none; text-align: center; padding: 80px 24px; }
+  .thankyou.show { display: block; }
+  .ty-icon {
+    width: 64px; height: 64px; background: #fff5f7; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; font-size: 28px; border: 2px solid #ffd0d8;
+  }
+  .thankyou h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 12px; }
+  .thankyou p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .form-container.hidden { display: none; }
+
+  @media (max-width: 480px) {
+    .options.grid-2 { grid-template-columns: 1fr; }
+    .scale-btn { height: 36px; font-size: 12px; }
+    .hero { padding: 40px 20px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">CultureGaon — Guest Research</div>
+  <h1>Help us build <em>real India</em><br>for real travelers.</h1>
+  <p>5 minutes. Honest answers only. Your responses directly shape what we build.</p>
+  <div class="pillars">
+    <div class="pillar"><span>01</span> Safe</div>
+    <div class="pillar"><span>02</span> Affordable</div>
+    <div class="pillar"><span>03</span> Authentic</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">0 of 32 answered</div>
+</div>
+
+<div class="form-wrapper">
+<div class="form-container" id="formContainer">
+
+  <!-- S1 WHO ARE YOU -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">1</div><div class="section-title">Who Are You</div></div>
+
+    <div class="q-card">
+      <div class="q-label">Where are you from?</div>
+      <input type="text" placeholder="City, Country" data-qid="q1">
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">How old are you?</div>
+      <div class="options grid-2">
+        <div class="opt" data-group="q2" data-val="Under 20"><div class="opt-check"></div><span class="opt-label">Under 20</span></div>
+        <div class="opt" data-group="q2" data-val="20–28"><div class="opt-check"></div><span class="opt-label">20–28</span></div>
+        <div class="opt" data-group="q2" data-val="29–38"><div class="opt-check"></div><span class="opt-label">29–38</span></div>
+        <div class="opt" data-group="q2" data-val="39+"><div class="opt-check"></div><span class="opt-label">39+</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">How do you usually travel?</div>
+      <div class="options">
+        <div class="opt" data-group="q3" data-val="Solo"><div class="opt-check"></div><span class="opt-label">Solo — I go alone</span></div>
+        <div class="opt" data-group="q3" data-val="Couple"><div class="opt-check"></div><span class="opt-label">With a partner</span></div>
+        <div class="opt" data-group="q3" data-val="Friends"><div class="opt-check"></div><span class="opt-label">With 2–3 friends</span></div>
+        <div class="opt" data-group="q3" data-val="Family"><div class="opt-check"></div><span class="opt-label">With family</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">How many times a year do you travel?</div>
+      <div class="options grid-2">
+        <div class="opt" data-group="q4" data-val="First time"><div class="opt-check"></div><span class="opt-label">First time ever</span></div>
+        <div class="opt" data-group="q4" data-val="Once"><div class="opt-check"></div><span class="opt-label">Once a year</span></div>
+        <div class="opt" data-group="q4" data-val="2–3 times"><div class="opt-check"></div><span class="opt-label">2–3 times</span></div>
+        <div class="opt" data-group="q4" data-val="4+ times"><div class="opt-check"></div><span class="opt-label">4+ times</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S2 THE PROBLEM -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">2</div><div class="section-title">The Problem We Are Solving</div></div>
+
+    <div class="q-card">
+      <div class="q-label">When you travel to a place like Jodhpur — what do you actually want to experience?</div>
+      <div class="q-sub">Not what you book. What you actually want deep down.</div>
+      <textarea placeholder="Write honestly..." data-qid="q5"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Have you ever felt like you were seeing "tourist India" instead of "real India"?</div>
+      <div class="options">
+        <div class="opt" data-group="q6" data-val="Yes always"><div class="opt-check"></div><span class="opt-label">Yes — always. Every trip feels like a performance for tourists.</span></div>
+        <div class="opt" data-group="q6" data-val="Sometimes"><div class="opt-check"></div><span class="opt-label">Sometimes — a few moments felt real, most didn't.</span></div>
+        <div class="opt" data-group="q6" data-val="Rarely"><div class="opt-check"></div><span class="opt-label">Rarely — I usually find authentic experiences.</span></div>
+        <div class="opt" data-group="q6" data-val="Never thought"><div class="opt-check"></div><span class="opt-label">Never thought about it honestly.</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">What is the biggest thing missing from your travel experiences in India?</div>
+      <div class="q-sub">Choose all that apply.</div>
+      <div class="options">
+        <div class="opt opt-checkbox" data-group="q7" data-val="Cultural food"><div class="opt-check"></div><span class="opt-label">Real cultural food — cooked by the family, not restaurant "traditional"</span></div>
+        <div class="opt opt-checkbox" data-group="q7" data-val="Local friend"><div class="opt-check"></div><span class="opt-label">A local friend who shows me the real city, not the tourist circuit</span></div>
+        <div class="opt opt-checkbox" data-group="q7" data-val="Inside a home"><div class="opt-check"></div><span class="opt-label">Actually sitting inside a real Indian family home</span></div>
+        <div class="opt opt-checkbox" data-group="q7" data-val="Daily rituals"><div class="opt-check"></div><span class="opt-label">Witnessing daily cultural rituals — puja, cooking, craft, evening chai</span></div>
+        <div class="opt opt-checkbox" data-group="q7" data-val="Real conversations"><div class="opt-check"></div><span class="opt-label">Real conversations with locals — not scripted or for tips</span></div>
+        <div class="opt opt-checkbox" data-group="q7" data-val="Nothing missing"><div class="opt-check"></div><span class="opt-label">Nothing is missing — I'm happy with current options</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Have you ever eaten traditional cultural food at an Indian family's home while traveling?</div>
+      <div class="options">
+        <div class="opt" data-group="q8" data-val="Yes naturally"><div class="opt-check"></div><span class="opt-label">Yes — it happened naturally, they invited me in</span></div>
+        <div class="opt" data-group="q8" data-val="Yes arranged"><div class="opt-check"></div><span class="opt-label">Yes — I arranged it through a contact or tour</span></div>
+        <div class="opt" data-group="q8" data-val="No but wanted"><div class="opt-check"></div><span class="opt-label">No — but I desperately wanted to</span></div>
+        <div class="opt" data-group="q8" data-val="Never occurred"><div class="opt-check"></div><span class="opt-label">No — it never even occurred to me as an option</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">If yes — describe that cultural food experience in one line. If no — what would it feel like?</div>
+      <textarea placeholder="One line. Honest." data-qid="q9"></textarea>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S3 THE BIG QUESTION -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">3</div><div class="section-title">The Rs.1,200 Full-Day Cultural Experience</div></div>
+
+    <div class="q-card highlight">
+      <div class="highlight-badge">Most Important Question</div>
+      <div class="q-label">Imagine you are a solo traveler in Jodhpur. For Rs.1,200–1,300 you get all three:</div>
+      <div class="q-sub" style="margin-bottom:16px;">
+        <strong style="color:var(--dark);">Cultural Stay</strong> — A verified Indian family home in the old city. Not a hotel. Their actual living home — courtyard, rooftop, the works.<br><br>
+        <strong style="color:var(--dark);">Cultural Food</strong> — Traditional Rajasthani food made from the family's own recipes. Dal baati churma. Ker sangri. Bajra roti. The kind that no restaurant can replicate because it belongs to this family specifically.<br><br>
+        <strong style="color:var(--dark);">Host Activity</strong> — Every family has something unique they do with you. A weaver family shows you how dhurries are made on a real loom. A Brahmin family does evening puja with you. An old city family takes you to their corner tapri where they have had chai with the same group for 20 years. A retired teacher tells you the hidden history of Mehrangarh that no guide knows. A heritage family opens their century-old family photo albums.<br><br>
+        All three together. Safe, verified, real. Rs.1,200–1,300 per person.
+      </div>
+      <div class="q-label">As a solo traveler — would you book this?</div>
+      <div class="options" style="margin-top:12px;">
+        <div class="opt" data-group="q10" data-val="Yes immediately"><div class="opt-check"></div><span class="opt-label">Yes — immediately. This is exactly what I travel for.</span></div>
+        <div class="opt" data-group="q10" data-val="Yes after profile"><div class="opt-check"></div><span class="opt-label">Yes — but only after seeing the family profile and safety features</span></div>
+        <div class="opt" data-group="q10" data-val="Maybe depends"><div class="opt-check"></div><span class="opt-label">Maybe — completely depends on the specific family</span></div>
+        <div class="opt" data-group="q10" data-val="Price too high"><div class="opt-check"></div><span class="opt-label">No — the price feels too high for what it is</span></div>
+        <div class="opt" data-group="q10" data-val="Not comfortable solo"><div class="opt-check"></div><span class="opt-label">No — not comfortable doing this alone</span></div>
+        <div class="opt" data-group="q10" data-val="Not my style"><div class="opt-check"></div><span class="opt-label">No — this is not how I like to travel</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Does Rs.1,200–1,300 feel fair for this complete experience?</div>
+      <div class="options">
+        <div class="opt" data-group="q11" data-val="Very fair"><div class="opt-check"></div><span class="opt-label">Very fair — honestly I'd expect to pay more</span></div>
+        <div class="opt" data-group="q11" data-val="Fair"><div class="opt-check"></div><span class="opt-label">Fair — it feels like a reasonable trade</span></div>
+        <div class="opt" data-group="q11" data-val="Slightly high"><div class="opt-check"></div><span class="opt-label">Slightly high — I'd feel better at Rs.800–1,000</span></div>
+        <div class="opt" data-group="q11" data-val="Too expensive"><div class="opt-check"></div><span class="opt-label">Too expensive — I'd want this under Rs.700</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Which part of the experience matters most to you? Choose top 2.</div>
+      <div class="options">
+        <div class="opt opt-checkbox" data-group="q12" data-val="Cultural food"><div class="opt-check"></div><span class="opt-label">The cultural food — eating what this specific family actually eats</span></div>
+        <div class="opt opt-checkbox" data-group="q12" data-val="Host activity"><div class="opt-check"></div><span class="opt-label">The host activity — tapri chai, puja, weaving, city stories</span></div>
+        <div class="opt opt-checkbox" data-group="q12" data-val="Living in home"><div class="opt-check"></div><span class="opt-label">Actually living in the home — not just visiting it</span></div>
+        <div class="opt opt-checkbox" data-group="q12" data-val="Family conversation"><div class="opt-check"></div><span class="opt-label">Sitting and talking with the family — their real unfiltered stories</span></div>
+        <div class="opt opt-checkbox" data-group="q12" data-val="Local city lens"><div class="opt-check"></div><span class="opt-label">Seeing the city through a local's eyes — not a tourist lens</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Hotel day vs Culture day — two versions of Jodhpur.</div>
+      <div class="q-sub">
+        <strong style="color:var(--dark);">Version A — Hotel Day:</strong> Buffet breakfast. Mehrangarh Fort ticket. Rooftop restaurant dal baati. Souvenir shopping on Clock Tower lane. Hotel checkout. You saw Jodhpur.<br><br>
+        <strong style="color:var(--dark);">Version B — Culture Day:</strong> Wake up in a verified family home in the blue lanes. Chai on the rooftop at sunrise. Bajra roti cooked by the grandmother from a recipe 40 years old. Walk to the tapri where this family has sat every evening for decades — their friends greet you like you belong. Hear a story about this city that no guidebook carries. Leave knowing a family, not just a monument.
+      </div>
+      <div class="q-label">Which would you actually choose?</div>
+      <div class="options">
+        <div class="opt" data-group="q13" data-val="Version B always"><div class="opt-check"></div><span class="opt-label">Version B — always. This is the whole point of traveling.</span></div>
+        <div class="opt" data-group="q13" data-val="Version B mostly"><div class="opt-check"></div><span class="opt-label">Version B — but I still want a proper bed and bathroom</span></div>
+        <div class="opt" data-group="q13" data-val="Mix"><div class="opt-check"></div><span class="opt-label">A mix — cultural day sometimes, hotel comfort other days</span></div>
+        <div class="opt" data-group="q13" data-val="Version A"><div class="opt-check"></div><span class="opt-label">Version A — I travel to relax, not to experience other lives</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Would a day visit (no overnight) at Rs.1,200 be enough — or do you need to sleep there to feel the full experience?</div>
+      <div class="options">
+        <div class="opt" data-group="q14" data-val="Day visit enough"><div class="opt-check"></div><span class="opt-label">Day visit is enough — I sleep at hotel, just want the culture</span></div>
+        <div class="opt" data-group="q14" data-val="Overnight makes it real"><div class="opt-check"></div><span class="opt-label">Overnight makes it real — waking up there is the whole point</span></div>
+        <div class="opt" data-group="q14" data-val="Multiple visits"><div class="opt-check"></div><span class="opt-label">I'd want to visit the same family multiple times across a trip</span></div>
+        <div class="opt" data-group="q14" data-val="Full day no overnight"><div class="opt-check"></div><span class="opt-label">Full day morning to evening — but sleep at hotel</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S4 SAFETY -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">4</div><div class="section-title">Safety — The Honest Questions</div></div>
+
+    <div class="q-card">
+      <div class="q-label">Gut feeling — how comfortable are you staying in a stranger's home as a solo traveler?</div>
+      <div class="q-sub">Pure instinct. Before any verification or feature exists.</div>
+      <div class="options">
+        <div class="opt" data-group="q15" data-val="Very comfortable"><div class="opt-check"></div><span class="opt-label">Very comfortable — I've done Couchsurfing, this feels fine</span></div>
+        <div class="opt" data-group="q15" data-val="Comfortable with verification"><div class="opt-check"></div><span class="opt-label">Comfortable — if verified and reviewed by others</span></div>
+        <div class="opt" data-group="q15" data-val="Nervous but open"><div class="opt-check"></div><span class="opt-label">Nervous — but open if safety features are genuinely strong</span></div>
+        <div class="opt" data-group="q15" data-val="Day only"><div class="opt-check"></div><span class="opt-label">Day visit yes, sleeping there no</span></div>
+        <div class="opt" data-group="q15" data-val="Not comfortable"><div class="opt-check"></div><span class="opt-label">Not comfortable — regardless of verification</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">What would make you completely trust this platform? Choose all that apply.</div>
+      <div class="options">
+        <div class="opt opt-checkbox" data-group="q16" data-val="Aadhaar verified"><div class="opt-check"></div><span class="opt-label">Family Aadhaar verified by platform team</span></div>
+        <div class="opt opt-checkbox" data-group="q16" data-val="Founder visited"><div class="opt-check"></div><span class="opt-label">Platform founder personally visited the home before listing</span></div>
+        <div class="opt opt-checkbox" data-group="q16" data-val="Guest stories"><div class="opt-check"></div><span class="opt-label">Real stories from previous guests — not just star ratings</span></div>
+        <div class="opt opt-checkbox" data-group="q16" data-val="Emergency exit"><div class="opt-check"></div><span class="opt-label">Emergency exit button — I can leave any time with full auto-refund</span></div>
+        <div class="opt opt-checkbox" data-group="q16" data-val="Safety checkin"><div class="opt-check"></div><span class="opt-label">Platform checks in with me 1 hour after I arrive</span></div>
+        <div class="opt opt-checkbox" data-group="q16" data-val="My ID too"><div class="opt-check"></div><span class="opt-label">My ID is verified too — family knows exactly who I am</span></div>
+        <div class="opt opt-checkbox" data-group="q16" data-val="24/7 support"><div class="opt-check"></div><span class="opt-label">24/7 WhatsApp support from the platform</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Solo women travelers — verified family home vs hotel. Which feels safer?</div>
+      <div class="options">
+        <div class="opt" data-group="q17" data-val="Family safer"><div class="opt-check"></div><span class="opt-label">Family home is safer — a real family is more trustworthy than hotel staff</span></div>
+        <div class="opt" data-group="q17" data-val="Same"><div class="opt-check"></div><span class="opt-label">Same — depends on the specific place, not the category</span></div>
+        <div class="opt" data-group="q17" data-val="Hotel safer"><div class="opt-check"></div><span class="opt-label">Hotel is safer — it has security protocols a family home doesn't</span></div>
+        <div class="opt" data-group="q17" data-val="Not solo"><div class="opt-check"></div><span class="opt-label">I would not do this alone regardless</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">What is the one thing that would make you immediately NOT book on this platform?</div>
+      <div class="q-note">This is our most important question. Be brutally honest — no softening.</div>
+      <textarea placeholder="Say exactly what would stop you." data-qid="q18"></textarea>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S5 FAR FROM FAMILY -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">5</div><div class="section-title">Staying Far From Your Own Family</div></div>
+
+    <div class="q-card">
+      <div class="q-label">Being far from your own family while staying with strangers — more free or more anxious?</div>
+      <div class="options">
+        <div class="opt" data-group="q19" data-val="More free"><div class="opt-check"></div><span class="opt-label">More free — that distance is exactly what I travel for</span></div>
+        <div class="opt" data-group="q19" data-val="Neither"><div class="opt-check"></div><span class="opt-label">Neither — I don't think about it</span></div>
+        <div class="opt" data-group="q19" data-val="Slightly anxious"><div class="opt-check"></div><span class="opt-label">Slightly anxious — I like knowing someone tracks where I am</span></div>
+        <div class="opt" data-group="q19" data-val="Very anxious"><div class="opt-check"></div><span class="opt-label">Very anxious — I need regular check-ins when traveling solo</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Would you share a check-in status with the platform while at a family home?</div>
+      <div class="options">
+        <div class="opt" data-group="q20" data-val="Yes fine"><div class="opt-check"></div><span class="opt-label">Yes — it makes me feel safer, completely fine with it</span></div>
+        <div class="opt" data-group="q20" data-val="Yes if optional"><div class="opt-check"></div><span class="opt-label">Yes — but only if optional, not forced</span></div>
+        <div class="opt" data-group="q20" data-val="Emergency contact only"><div class="opt-check"></div><span class="opt-label">Only my personal emergency contact — not the app</span></div>
+        <div class="opt" data-group="q20" data-val="No privacy"><div class="opt-check"></div><span class="opt-label">No — privacy concern, I don't want to be tracked</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">If the host family politely asked you to leave early because they were uncomfortable — how would you react?</div>
+      <div class="options">
+        <div class="opt" data-group="q21" data-val="Fine full refund"><div class="opt-check"></div><span class="opt-label">Fine — as long as I get full refund for unused time</span></div>
+        <div class="opt" data-group="q21" data-val="Fine their right"><div class="opt-check"></div><span class="opt-label">Fine — it's their home, they have every right</span></div>
+        <div class="opt" data-group="q21" data-val="Embarrassed"><div class="opt-check"></div><span class="opt-label">Embarrassed — it would ruin the whole experience</span></div>
+        <div class="opt" data-group="q21" data-val="Upset"><div class="opt-check"></div><span class="opt-label">Upset — I paid for this, I should be able to stay</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S6 THREE PILLARS -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">6</div><div class="section-title">Safe. Affordable. Authentic.</div></div>
+
+    <div class="q-card">
+      <div class="q-label">We believe the future of travel is built on three pillars — Safe, Affordable, Authentic. Which matters most to you?</div>
+      <div class="options">
+        <div class="opt" data-group="q22" data-val="Safe first"><div class="opt-check"></div><span class="opt-label">Safe first — without safety, nothing else matters</span></div>
+        <div class="opt" data-group="q22" data-val="Authentic first"><div class="opt-check"></div><span class="opt-label">Authentic first — I'll take some risk for a real experience</span></div>
+        <div class="opt" data-group="q22" data-val="Affordable first"><div class="opt-check"></div><span class="opt-label">Affordable first — budget decides everything for me</span></div>
+        <div class="opt" data-group="q22" data-val="All equal"><div class="opt-check"></div><span class="opt-label">All three equally — no compromise on any</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Is "authentic cultural experience" a strong enough reason to choose one platform over another?</div>
+      <div class="options">
+        <div class="opt" data-group="q23" data-val="Yes main reason"><div class="opt-check"></div><span class="opt-label">Yes — it would be the main reason I switch from hotels or Airbnb</span></div>
+        <div class="opt" data-group="q23" data-val="Yes one factor"><div class="opt-check"></div><span class="opt-label">Yes — one important factor alongside price and safety</span></div>
+        <div class="opt" data-group="q23" data-val="Probably not"><div class="opt-check"></div><span class="opt-label">Probably not — I care more about comfort and reliable reviews</span></div>
+        <div class="opt" data-group="q23" data-val="No"><div class="opt-check"></div><span class="opt-label">No — I don't travel specifically for cultural experiences</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Rate how excited you are about this kind of travel becoming mainstream in India.</div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Not at all</span><span>This is the future</span></div>
+        <div class="scale-btns" data-group="q24">
+          <button class="scale-btn" data-val="1">1</button>
+          <button class="scale-btn" data-val="2">2</button>
+          <button class="scale-btn" data-val="3">3</button>
+          <button class="scale-btn" data-val="4">4</button>
+          <button class="scale-btn" data-val="5">5</button>
+          <button class="scale-btn" data-val="6">6</button>
+          <button class="scale-btn" data-val="7">7</button>
+          <button class="scale-btn" data-val="8">8</button>
+          <button class="scale-btn" data-val="9">9</button>
+          <button class="scale-btn" data-val="10">10</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S7 SUGGESTIONS -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">7</div><div class="section-title">Your Suggestions</div></div>
+
+    <div class="q-card">
+      <div class="q-label">What one feature would make CultureGaon a 10 out of 10 for you?</div>
+      <div class="q-sub">Something we haven't mentioned — your own idea entirely.</div>
+      <textarea placeholder="Dream feature. Don't hold back." data-qid="q25"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">What should we absolutely never do on this platform?</div>
+      <div class="q-note">Negative feedback is the most valuable thing you can give us.</div>
+      <textarea placeholder="What would completely ruin it?" data-qid="q26"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Have you used any of these before? Choose all that apply.</div>
+      <div class="options grid-2">
+        <div class="opt opt-checkbox" data-group="q27" data-val="Airbnb"><div class="opt-check"></div><span class="opt-label">Airbnb</span></div>
+        <div class="opt opt-checkbox" data-group="q27" data-val="Couchsurfing"><div class="opt-check"></div><span class="opt-label">Couchsurfing</span></div>
+        <div class="opt opt-checkbox" data-group="q27" data-val="Workaway"><div class="opt-check"></div><span class="opt-label">Workaway</span></div>
+        <div class="opt opt-checkbox" data-group="q27" data-val="Homestays of India"><div class="opt-check"></div><span class="opt-label">Homestays of India</span></div>
+        <div class="opt opt-checkbox" data-group="q27" data-val="None"><div class="opt-check"></div><span class="opt-label">None of these</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">If this platform existed today — how would you find out about it?</div>
+      <div class="options">
+        <div class="opt" data-group="q28" data-val="Instagram Reels"><div class="opt-check"></div><span class="opt-label">Instagram / Reels</span></div>
+        <div class="opt" data-group="q28" data-val="Friend told me"><div class="opt-check"></div><span class="opt-label">A friend told me</span></div>
+        <div class="opt" data-group="q28" data-val="YouTube travel"><div class="opt-check"></div><span class="opt-label">YouTube travel video</span></div>
+        <div class="opt" data-group="q28" data-val="Reddit"><div class="opt-check"></div><span class="opt-label">Reddit travel community</span></div>
+        <div class="opt" data-group="q28" data-val="Google search"><div class="opt-check"></div><span class="opt-label">Google search while planning a trip</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- S8 FIRST GUEST -->
+  <div class="section">
+    <div class="section-header"><div class="section-num">8</div><div class="section-title">Be Our First Guest</div></div>
+
+    <div class="q-card">
+      <div class="q-label">Would you be one of our first 10 guests when we launch in Jodhpur?</div>
+      <div class="options">
+        <div class="opt" data-group="q29" data-val="Yes sign me up"><div class="opt-check"></div><span class="opt-label">Yes — sign me up right now</span></div>
+        <div class="opt" data-group="q29" data-val="Maybe keep posted"><div class="opt-check"></div><span class="opt-label">Maybe — keep me posted on launch</span></div>
+        <div class="opt" data-group="q29" data-val="No"><div class="opt-check"></div><span class="opt-label">No — not right now</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">If yes or maybe — drop your WhatsApp number or email.</div>
+      <div class="q-sub">We reach out when Jodhpur goes live. Zero spam, ever.</div>
+      <input type="text" placeholder="WhatsApp number or email" data-qid="q30">
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit My Responses</button>
+    <div class="submit-note" id="submitNote">Anonymous unless you shared contact above.</div>
+  </div>
+
+</div><!-- /form-container -->
+
+<div class="thankyou" id="thankyou">
+  <div class="ty-icon">🙏</div>
+  <h2>Shukriya.</h2>
+  <p>Your answers will shape how we build this.<br>Real India is waiting — you just helped us find it.</p>
+  <br>
+  <p style="color:var(--muted);font-size:13px;">— Aryan Krishan, Founder, CultureGaon<br>IIT Jodhpur Incubation 2025</p>
+</div>
+
+</div><!-- /form-wrapper -->
+
+<div class="toast" id="toast">Saving...</div>
+
+<script>
+  // ─── PASTE YOUR APPS SCRIPT URL HERE AFTER STEP 4 BELOW ───
+  const SHEET_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+  // ───────────────────────────────────────────────────────────
+
+  const TOTAL = 30;
+  const answers = {};
+
+  function updateProgress() {
+    const count = Object.keys(answers).length;
+    const pct = Math.round((count / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+    document.getElementById('progressText').textContent = count + ' of ' + TOTAL + ' answered';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  document.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', function () {
+      const group = this.dataset.group;
+      const val = this.dataset.val;
+      const isCheckbox = this.classList.contains('opt-checkbox');
+      if (!isCheckbox) {
+        document.querySelectorAll(`.opt[data-group="${group}"]`).forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        answers[group] = val;
+      } else {
+        this.classList.toggle('selected');
+        if (!answers[group]) answers[group] = [];
+        if (this.classList.contains('selected')) {
+          if (!answers[group].includes(val)) answers[group].push(val);
+        } else {
+          answers[group] = answers[group].filter(v => v !== val);
+        }
+      }
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('.scale-btns').forEach(wrap => {
+    wrap.querySelectorAll('.scale-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const group = wrap.dataset.group;
+        wrap.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        answers[group] = this.dataset.val;
+        updateProgress();
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-qid]').forEach(el => {
+    el.addEventListener('input', function () {
+      const qid = this.dataset.qid;
+      const val = this.value.trim();
+      if (val) answers[qid] = val; else delete answers[qid];
+      updateProgress();
+    });
+  });
+
+  async function submitForm() {
+    const btn = document.getElementById('submitBtn');
+    const note = document.getElementById('submitNote');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    showToast('Saving your responses...');
+
+    answers['timestamp'] = new Date().toISOString();
+
+    const payload = {};
+    for (const [key, val] of Object.entries(answers)) {
+      payload[key] = Array.isArray(val) ? val.join(', ') : val;
+    }
+
+    try {
+      if (SHEET_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
+        console.log('SURVEY RESPONSE:', JSON.stringify(payload, null, 2));
+        showToast('Dev mode — check console');
+      } else {
+        await fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        showToast('Saved!');
+      }
+      setTimeout(() => {
+        document.getElementById('formContainer').classList.add('hidden');
+        document.getElementById('thankyou').classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 800);
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Submit My Responses';
+      note.textContent = 'Something went wrong. Try again.';
+      note.style.color = 'var(--red)';
+    }
+  }
+</script>
+</body>
+</html>
